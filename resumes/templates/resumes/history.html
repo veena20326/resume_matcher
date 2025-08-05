@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resume Match History</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb');
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+        }
+
+        nav {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            margin-left: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 80px auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        table th, table td {
+            padding: 12px;
+            border: 1px solid #ccc;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+        }
+
+        .no-history {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+        }
+
+        .download-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .download-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div><strong>Resume Matcher</strong></div>
+    <div>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+    <h2>Resume Match History</h2>
+    {% if match_results %}
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Resume</th>
+                    <th>Job Description</th>
+                    <th>Match Score</th>
+                    <th>Result PDF</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in match_results %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ result.timestamp|date:"Y-m-d H:i" }}</td>
+                        <td>{{ result.resume_file.name|slice:"15:" }}</td>
+                        <td>{{ result.job_description|truncatewords:10 }}</td>
+                        <td>{{ result.match_score }}%</td>
+                        <td class="download-link">
+                            {% if result.result_pdf %}
+                                <a href="{{ result.result_pdf.url }}" download>Download PDF</a>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="no-history">No history available.</div>
+    {% endif %}
+</div>
+
+</body>
+</html>

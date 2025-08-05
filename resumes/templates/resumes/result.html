@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resume Match Result</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #score {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+
+        canvas {
+            max-width: 400px;
+            margin: auto;
+        }
+
+        .button-container {
+            margin-top: 30px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0 10px;
+            display: inline-block;
+        }
+
+        .button.green {
+            background-color: #28a745;
+        }
+
+        .button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Resume Match Result</h1>
+        <p id="score">Match Score: {{ score|default:0 }}%</p>
+
+        <canvas id="scoreChart" width="400" height="400"></canvas>
+
+        <div class="button-container">
+            <a href="{% url 'match_history' %}" class="button green">View History</a>
+            <a href="{% url 'match_resume' %}" class="button">Try Again</a>
+        </div>
+    </div>
+
+    <script>
+        const matchScore = Number("{{ score|default:0 }}");
+        const remainingScore = 100 - matchScore;
+
+        const ctx = document.getElementById('scoreChart').getContext('2d');
+
+        const chart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Matched', 'Unmatched'],
+                datasets: [{
+                    data: [matchScore, remainingScore],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(255, 99, 132, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Resume Match Score'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
